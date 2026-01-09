@@ -27,6 +27,8 @@ import {
   getStreamableProduct,
 } from './page-data';
 
+import { getB2BContext } from '../../../../../b2b/get-b2b-context';
+
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<SearchParams>;
@@ -66,6 +68,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Product({ params, searchParams }: Props) {
   const { locale, slug } = await params;
+
+  const b2b = await getB2BContext();
+  /* console.log("B2B context:", b2b.state); */
+  console.log('[PDP] b2b context:', {
+    state: b2b.state,
+    hasJwt: b2b.state === 'logged-in' ? Boolean(b2b.bcCurrentCustomerJwt) : false,
+    hasB2BToken: b2b.state === 'logged-in' ? Boolean(b2b.b2bStorefrontAuthToken) : false,
+  });
+
   const customerAccessToken = await getSessionCustomerAccessToken();
   const detachedWishlistFormId = 'product-add-to-wishlist-form';
 
